@@ -6,7 +6,7 @@
 // ============================================================
 
 // THREE ya está disponible como variable global (cargado vía <script> en index.html)
-// INTRO, HUD, MEMORIES y FOOTER_TEXT vienen de content.js (cargado antes que este archivo)
+// INTRO, HUD, MEMORIES vienen de content.js (cargado antes que este archivo)
 
 /* ---------------------------------------------------------
    1. SETUP BÁSICO DE THREE.JS
@@ -38,9 +38,6 @@ window.addEventListener("resize", () => {
 /* ---------------------------------------------------------
    2. GALAXIA ESPIRAL (puntos de colores girando)
 --------------------------------------------------------- */
-/* ---------------------------------------------------------
-   2. GALAXIA ESPIRAL (puntos de colores girando)
---------------------------------------------------------- */
 const GALAXY_COUNT = 9000;
 const galaxyGeometry = new THREE.BufferGeometry();
 const galaxyPositions = new Float32Array(GALAXY_COUNT * 3);
@@ -48,7 +45,7 @@ const galaxyColors = new Float32Array(GALAXY_COUNT * 3);
 const galaxyAngles = new Float32Array(GALAXY_COUNT);
 const galaxyRadii = new Float32Array(GALAXY_COUNT);
 
-// Paleta de colores ajustada para un morado cósmico
+// Paleta de colores morado cósmico
 const palette = [
   new THREE.Color(0x6a0dad), // Morado intenso
   new THREE.Color(0x9370db), // Morado medio
@@ -80,7 +77,6 @@ for (let i = 0; i < GALAXY_COUNT; i++) {
   galaxyPositions[i3 + 1] = randomY;
   galaxyPositions[i3 + 2] = Math.sin(angle) * radius + randomZ;
 
-  // Selección de color aleatoria de la nueva paleta morada
   const color = palette[Math.floor(Math.random() * palette.length)].clone();
   const mix = Math.random() * 0.4;
   color.offsetHSL(0, 0, mix);
@@ -106,20 +102,20 @@ const galaxyMaterial = new THREE.PointsMaterial({
 const galaxyPoints = new THREE.Points(galaxyGeometry, galaxyMaterial);
 scene.add(galaxyPoints);
 
-// Núcleo brillante en el centro con un tono más frío
+// Núcleo brillante en el centro
 const coreLight = new THREE.PointLight(0xe0b0ff, 6, 10, 2); // Lavanda suave
 coreLight.position.set(0, 0.2, 0);
 scene.add(coreLight);
 
 const coreGeo = new THREE.SphereGeometry(0.18, 24, 24);
-const coreMat = new THREE.MeshBasicMaterial({ color: 0xf3eaff }); // Ink color de la intro
+const coreMat = new THREE.MeshBasicMaterial({ color: 0xf3eaff });
 const coreMesh = new THREE.Mesh(coreGeo, coreMat);
 scene.add(coreMesh);
+
 /* ---------------------------------------------------------
    3. CORAZÓN DE PARTÍCULAS (emerge sobre la galaxia)
 --------------------------------------------------------- */
 function heartPoint(t) {
-  // Curva paramétrica clásica del corazón
   const x = 16 * Math.pow(Math.sin(t), 3);
   const y =
     13 * Math.cos(t) -
@@ -133,7 +129,7 @@ const HEART_COUNT = 2600;
 const heartGeometry = new THREE.BufferGeometry();
 const heartPositions = new Float32Array(HEART_COUNT * 3);
 const heartColors = new Float32Array(HEART_COUNT * 3);
-const heartBase = new Float32Array(HEART_COUNT * 3); // posición base para animar
+const heartBase = new Float32Array(HEART_COUNT * 3);
 
 const heartColor = new THREE.Color(0xff2e9e);
 
@@ -145,7 +141,7 @@ for (let i = 0; i < HEART_COUNT; i++) {
 
   const scale = 1.45;
   const x = p.x * scale + (Math.random() - 0.5) * jitter;
-  const y = p.y * scale + (Math.random() - 0.5) * jitter + 3.0; // elevado sobre la galaxia
+  const y = p.y * scale + (Math.random() - 0.5) * jitter + 3.0;
   const z = (Math.random() - 0.5) * 0.25;
 
   heartBase[i3] = x;
@@ -153,7 +149,7 @@ for (let i = 0; i < HEART_COUNT; i++) {
   heartBase[i3 + 2] = z;
 
   heartPositions[i3] = x;
-  heartPositions[i3 + 1] = 0; // arranca colapsado, se anima hacia arriba en el render loop
+  heartPositions[i3 + 1] = 0;
   heartPositions[i3 + 2] = z;
 
   const c = heartColor.clone().offsetHSL((Math.random() - 0.5) * 0.04, 0, Math.random() * 0.25);
@@ -182,17 +178,15 @@ scene.add(heartPoints);
 --------------------------------------------------------- */
 const clock = new THREE.Clock();
 let sceneStarted = false;
-let revealProgress = 0; // 0 -> 1, anima el corazón apareciendo
+let revealProgress = 0;
 
 function animate() {
   requestAnimationFrame(animate);
   const elapsed = clock.getElapsedTime();
 
-  // Rotar la galaxia lentamente
   galaxyPoints.rotation.y = elapsed * 0.06;
   coreMesh.rotation.y = elapsed * 0.06;
 
-  // Suave "respiración" de cámara
   camera.position.x = Math.sin(elapsed * 0.05) * 0.6;
   camera.lookAt(0, 1.4, 0);
 
@@ -207,7 +201,6 @@ function animate() {
     posAttr.needsUpdate = true;
   }
 
-  // Leve flotación del corazón ya formado
   if (revealProgress >= 1) {
     heartPoints.position.y = Math.sin(elapsed * 0.8) * 0.05;
   }
@@ -229,7 +222,8 @@ function applyStaticContent() {
   document.querySelector("#hud .label-top").textContent = HUD.eyebrow;
   document.querySelector("#hud h1").textContent = HUD.headline;
 
-   document.getElementById("footer-credit").textContent = "Hecho con ❤ para ti";
+  // Corregido para evitar depender de una variable externa faltante
+  document.getElementById("footer-credit").textContent = "Hecho con ❤ para ti";
 }
 applyStaticContent();
 
@@ -263,7 +257,7 @@ function positionBubbles() {
     const r = (mem.radius / 100) * minDim;
 
     const x = cx + Math.cos(t) * r;
-    const y = cy + Math.sin(t) * r * 0.55; // aplanada para look "orbital"
+    const y = cy + Math.sin(t) * r * 0.55;
 
     bubble.style.left = `${x}px`;
     bubble.style.top = `${y}px`;
@@ -288,14 +282,11 @@ const modalTitle = document.getElementById("modalTitle");
 const modalText = document.getElementById("modalText");
 
 function openModal(mem) {
-  // Usa la imagen específica del mensaje si tiene una, si no, la imagen
-  // por defecto (DEFAULT_MODAL_IMAGE, ej. tu foto de Kuromi).
   const imgSrc = (mem.image && mem.image.trim()) ? mem.image : DEFAULT_MODAL_IMAGE;
 
   if (imgSrc && imgSrc.trim()) {
     modalImage.src = imgSrc;
     modalImage.classList.add("has-image");
-    // Si la imagen no existe o no carga, la ocultamos para no romper el diseño
     modalImage.onerror = () => modalImage.classList.remove("has-image");
   } else {
     modalImage.classList.remove("has-image");
