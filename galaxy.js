@@ -229,7 +229,7 @@ function applyStaticContent() {
   document.querySelector("#hud .label-top").textContent = HUD.eyebrow;
   document.querySelector("#hud h1").textContent = HUD.headline;
 
-  document.getElementById("footer-credit").textContent = FOOTER_TEXT;
+   document.getElementById("footer-credit").textContent = "Hecho con ❤ para ti";
 }
 applyStaticContent();
 
