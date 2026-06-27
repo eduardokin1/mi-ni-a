@@ -17,7 +17,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x05030d);
+scene.background = new THREE.Color(4b0082);
 scene.fog = new THREE.FogExp2(0x05030d, 0.06);
 
 const camera = new THREE.PerspectiveCamera(
