@@ -73,4 +73,5 @@ const MEMORIES = [
     text: "Hay una fuerza que no puedo explicar, me atrae hacia ti sin remedio y no quiero que cambie.",
     image: "kuromi.jpg" 
   }
-];
+]
+  const FOOTER_TEXT = "Hecho con ❤ para ti";
